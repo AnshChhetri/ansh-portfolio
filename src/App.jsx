@@ -147,6 +147,24 @@ export default function Portfolio() {
     return () => root.removeEventListener("pointermove", onMove);
   }, []);
 
+  useEffect(() => {
+    const sections = document.querySelectorAll(".reveal");
+    if (!("IntersectionObserver" in window)) {
+      sections.forEach((section) => section.classList.add("is-visible"));
+      return undefined;
+    }
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: "0px 0px -36px 0px" });
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <main className="site-shell" ref={heroRef}>
       <div className="ambient ambient-one" aria-hidden="true" />
@@ -165,10 +183,20 @@ export default function Portfolio() {
         <a className="availability" href="mailto:ansh.chhetri2007@gmail.com"><span /> Open to ideas</a>
       </header>
 
+      <aside className="social-rail" aria-label="Social links">
+        {CONTACTS.map(({ label, href, Icon }) => (
+          <a key={label} href={href} aria-label={label} title={label} target={href.startsWith("http") ? "_blank" : undefined} rel={href.startsWith("http") ? "noreferrer" : undefined}>
+            <Icon size={17} strokeWidth={1.7} />
+          </a>
+        ))}
+      </aside>
+
       <section className="hero wrap" id="top">
         <div className="hero-copy">
           <div className="eyebrow"><Sparkles size={14} /> IT (AI) STUDENT · GAME DEVELOPER</div>
-          <h1>Curious mind.<br /><span>Playable</span> ideas.</h1>
+          <p className="hero-greeting">Hey, I’m</p>
+          <h1>Ansh <span>Chhetri</span></h1>
+          <p className="hero-role">Student by day. Game builder by curiosity.</p>
           <p className="hero-intro">
             I’m Ansh — a second-year IT (AI) student in Siliguri who spends most nights building small games and breaking them again in Python and JavaScript.
           </p>
@@ -183,7 +211,7 @@ export default function Portfolio() {
         <span className="hero-index">01 / 04</span>
       </section>
 
-      <section className="content-section wrap" id="about">
+      <section className="content-section wrap reveal" id="about">
         <div className="section-kicker">A LITTLE ABOUT ME <span>01</span></div>
         <div className="about-layout">
           <h2>Learning by<br />making <em>things.</em></h2>
@@ -196,7 +224,7 @@ export default function Portfolio() {
         </div>
       </section>
 
-      <section className="content-section tools-section wrap" id="tools">
+      <section className="content-section tools-section wrap reveal" id="tools">
         <div className="section-kicker">MY TOOLKIT <span>02</span></div>
         <div className="tools-layout">
           <h2>Tools for<br /><em>the build.</em></h2>
@@ -204,7 +232,7 @@ export default function Portfolio() {
         </div>
       </section>
 
-      <section className="content-section projects-section wrap" id="projects">
+      <section className="content-section projects-section wrap reveal" id="projects">
         <div className="section-kicker">SELECTED BUILDS <span>03</span></div>
         <div className="projects-heading"><h2>Made with<br /><em>curiosity.</em></h2><p className="section-lead">A few things I’ve built. More experiments are always in progress.</p></div>
         <div className="project-list">
@@ -215,7 +243,7 @@ export default function Portfolio() {
         <a className="all-projects" href="https://github.com/AnshChhetri" target="_blank" rel="noreferrer"><Braces size={16} /> More experiments on GitHub <ArrowUpRight size={15} /></a>
       </section>
 
-      <section className="content-section contact-section wrap" id="contact">
+      <section className="content-section contact-section wrap reveal" id="contact">
         <div className="section-kicker">SAY HELLO <span>04</span></div>
         <div className="contact-heading"><h2>Have an idea?<br /><em>Let’s make it.</em></h2><p className="section-lead">Whether it’s about a game, a project, or Python and JS in general — my inbox is open.</p></div>
         <div className="contact-list">
